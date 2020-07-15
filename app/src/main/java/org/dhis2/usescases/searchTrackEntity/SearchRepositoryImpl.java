@@ -255,10 +255,9 @@ public class SearchRepositoryImpl implements SearchRepository {
 
         OrganisationUnitMode ouMode;
         if (orgUnits.isEmpty()) {
-            orgUnits.addAll(
-                    UidsHelper.getUidsList(d2.organisationUnitModule().organisationUnits()
-                            .byRootOrganisationUnit(true)
-                            .blockingGet()));
+            orgUnits.addAll(d2.organisationUnitModule().organisationUnits()
+                    .byRootOrganisationUnit(true)
+                    .blockingGetUids());
             ouMode = OrganisationUnitMode.DESCENDANTS;
         } else
             ouMode = OrganisationUnitMode.SELECTED;
@@ -493,13 +492,14 @@ public class SearchRepositoryImpl implements SearchRepository {
 
     private void setOverdueEvents(@NonNull SearchTeiModel tei, Program selectedProgram) {
         String teiId = tei.getTei() != null && tei.getTei().uid() != null ? tei.getTei().uid() : "";
-        List<Enrollment> enrollments = d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(teiId).blockingGet();
+        List<String> enrollmentsUids =
+                d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(teiId).blockingGetUids();
 
-        EventCollectionRepository scheduledEvents = d2.eventModule().events().byEnrollmentUid().in(UidsHelper.getUidsList(enrollments))
+        EventCollectionRepository scheduledEvents = d2.eventModule().events().byEnrollmentUid().in(enrollmentsUids)
                 .byStatus().eq(EventStatus.SCHEDULE)
                 .byDueDate().before(new Date());
 
-        EventCollectionRepository overdueEvents = d2.eventModule().events().byEnrollmentUid().in(UidsHelper.getUidsList(enrollments)).byStatus().eq(EventStatus.OVERDUE);
+        EventCollectionRepository overdueEvents = d2.eventModule().events().byEnrollmentUid().in(enrollmentsUids).byStatus().eq(EventStatus.OVERDUE);
 
         if (selectedProgram != null) {
             scheduledEvents = scheduledEvents.byProgramUid().eq(selectedProgram.uid()).orderByDueDate(RepositoryScope.OrderByDirection.DESC);

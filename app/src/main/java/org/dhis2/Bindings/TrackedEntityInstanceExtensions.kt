@@ -42,11 +42,9 @@ fun MutableList<TrackedEntityInstance>.filterEvents(
             val hasEventsInPeriod =
                 !d2.eventModule().events()
                     .byEnrollmentUid().`in`(
-                        UidsHelper.getUidsList(
-                            d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(
-                                tei.uid()
-                            ).byProgram().eq(program).blockingGet()
-                        )
+                        d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(
+                            tei.uid()
+                        ).byProgram().eq(program).blockingGetUids()
                     )
                     .byStatus().`in`(EventStatus.ACTIVE, EventStatus.COMPLETED)
                     .byEventDate().inDatePeriods(eventPeriods)
@@ -54,11 +52,9 @@ fun MutableList<TrackedEntityInstance>.filterEvents(
             val hasScheduleInPeriod =
                 !d2.eventModule().events()
                     .byEnrollmentUid().`in`(
-                        UidsHelper.getUidsList(
-                            d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(
-                                tei.uid()
-                            ).byProgram().eq(program).blockingGet()
-                        )
+                        d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(
+                            tei.uid()
+                        ).byProgram().eq(program).blockingGetUids()
                     )
                     .byStatus().`in`(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.SKIPPED)
                     .byDueDate().inDatePeriods(eventPeriods)

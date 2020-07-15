@@ -366,8 +366,7 @@ internal class HomeRepositoryImpl(
     private fun getEnrollmentsWithAssignedEvents(
         enrollmentRepository: EnrollmentCollectionRepository
     ): List<String> {
-        val currentEnrollments = enrollmentRepository.blockingGet()
-            .map { it.uid() }
+        val currentEnrollments = enrollmentRepository.blockingGetUids()
 
         return d2.eventModule().events()
             .byDeleted().isFalse

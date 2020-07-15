@@ -185,9 +185,9 @@ class SyncPresenterImpl(
 
     override fun checkSyncStatus(): Boolean {
         val eventsOk =
-            d2.eventModule().events().byState().notIn(State.SYNCED).blockingGet().isEmpty()
+            d2.eventModule().events().byState().notIn(State.SYNCED).blockingIsEmpty()
         val teiOk = d2.trackedEntityModule().trackedEntityInstances().byState()
-            .notIn(State.SYNCED, State.RELATIONSHIP).blockingGet().isEmpty()
+            .notIn(State.SYNCED, State.RELATIONSHIP).blockingIsEmpty()
         return eventsOk && teiOk
     }
 
@@ -336,14 +336,14 @@ class SyncPresenterImpl(
         return d2.eventModule().events()
             .byUid().eq(uid)
             .byState().notIn(State.SYNCED)
-            .blockingGet().isEmpty()
+            .blockingIsEmpty()
     }
 
     override fun checkSyncTEIStatus(uid: String): Boolean {
         return d2.trackedEntityModule().trackedEntityInstances()
             .byUid().eq(uid)
             .byState().notIn(State.SYNCED, State.RELATIONSHIP)
-            .blockingGet().isEmpty()
+            .blockingIsEmpty()
     }
 
     override fun checkSyncDataValueStatus(
@@ -355,7 +355,7 @@ class SyncPresenterImpl(
             .byOrganisationUnitUid().eq(orgUnit)
             .byAttributeOptionComboUid().eq(attributeOptionCombo)
             .byState().notIn(State.SYNCED)
-            .blockingGet().isEmpty()
+            .blockingIsEmpty()
     }
 
     override fun checkSyncProgramStatus(uid: String): Boolean {
@@ -365,11 +365,11 @@ class SyncPresenterImpl(
             d2.trackedEntityModule().trackedEntityInstances()
                 .byProgramUids(listOf(uid))
                 .byState().notIn(State.SYNCED, State.RELATIONSHIP)
-                .blockingGet().isEmpty()
+                .blockingIsEmpty()
         } else {
             d2.eventModule().events().byProgramUid().eq(uid)
                 .byState().notIn(State.SYNCED)
-                .blockingGet().isEmpty()
+                .blockingIsEmpty()
         }
     }
 
@@ -382,7 +382,7 @@ class SyncPresenterImpl(
             .byPeriod().eq(dataSetReport.period())
             .byAttributeOptionComboUid().eq(dataSetReport.attributeOptionComboUid())
             .byState().notIn(State.SYNCED)
-            .blockingGet().isEmpty()
+            .blockingIsEmpty()
     }
 
     override fun messageTrackerImportConflict(uid: String): List<TrackerImportConflict>? {

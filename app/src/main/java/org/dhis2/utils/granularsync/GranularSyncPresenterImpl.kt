@@ -194,14 +194,13 @@ class GranularSyncPresenterImpl(
             EVENT -> smsSender.convertSimpleEvent(recordUid)
             TEI -> {
                 // TODO: GET ALL ENROLLMENTS FROM TEI
-                val enrollmentUids = UidsHelper.getUidsList(
-                    d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(recordUid)
+                val enrollmentUids = d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(recordUid)
                         .byState().`in`(
                             State.TO_POST,
                             State.TO_UPDATE,
                             State.UPLOADING
-                        ).blockingGet()
-                )
+                        ).blockingGetUids()
+
                 if (enrollmentUids.isNotEmpty()) {
                     smsSender.convertEnrollment(enrollmentUids[0])
                 } else if (!d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(
@@ -470,9 +469,8 @@ class GranularSyncPresenterImpl(
                 }?.distinct()
             }
             .flatMap {
-                d2.categoryModule().categoryOptionCombos().byCategoryComboUid().`in`(it).get()
+                d2.categoryModule().categoryOptionCombos().byCategoryComboUid().`in`(it).uids
             }
-            .map { UidsHelper.getUidsList(it) }
     }
 
     override fun onDettach() {

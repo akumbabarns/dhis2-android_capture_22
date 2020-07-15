@@ -234,19 +234,19 @@ class DataSetTableRepositoryImpl(
                                 ?: d2.dataElementModule().dataElements()
                                     .uid(dataSetElement.dataElement().uid())
                                     .blockingGet().categoryComboUid()
-                            val categoryOptionCombos =
+                            val categoryOptionComboUids =
                                 d2.categoryModule().categoryOptionCombos().byCategoryComboUid()
-                                    .eq(catComboUid).blockingGet()
+                                    .eq(catComboUid).blockingGetUids()
                             val dataValueRepository = d2.dataValueModule().dataValues()
                                 .byPeriod().eq(periodId)
                                 .byOrganisationUnitUid().eq(orgUnitUid)
                                 .byCategoryOptionComboUid().eq(catOptCombo)
                                 .byDataElementUid().eq(dataSetElement.dataElement().uid())
                                 .byCategoryOptionComboUid()
-                                .`in`(UidsHelper.getUidsList(categoryOptionCombos))
-                            dataValueRepository.blockingGet().isNotEmpty() &&
+                                .`in`(categoryOptionComboUids)
+                            !dataValueRepository.blockingIsEmpty() &&
                                 dataValueRepository
-                                .blockingGet().size != categoryOptionCombos.size
+                                .blockingCount() != categoryOptionComboUids.size
                         }?.map { dataSetElement -> dataSetElement.dataElement().uid() }
                         ?: emptyList()
                 } else {

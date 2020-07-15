@@ -37,9 +37,9 @@ public class OrgUnitItem {
         if (!isEmpty(parentUid))
             captureRepo = captureRepo.byParentUid().eq(parentUid);
         if (ouScope == OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
-            hasCaptureOrgUnits = !captureRepo.blockingGet().isEmpty(); //All search and capture, as capture ou implies it can be searched
+            hasCaptureOrgUnits = !captureRepo.blockingIsEmpty(); //All search and capture, as capture ou implies it can be searched
         else
-            hasCaptureOrgUnits = !captureRepo.byOrganisationUnitScope(ouScope).blockingGet().isEmpty();
+            hasCaptureOrgUnits = !captureRepo.byOrganisationUnitScope(ouScope).blockingIsEmpty();
 
 //        getLevelOrgUnits();
         return hasCaptureOrgUnits;

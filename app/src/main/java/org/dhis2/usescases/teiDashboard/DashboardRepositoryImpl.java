@@ -348,15 +348,14 @@ public class DashboardRepositoryImpl
                     .orderBySortOrder(RepositoryScope.OrderByDirection.ASC).get().toObservable();
         } else {
             return Observable.fromCallable(() -> d2.trackedEntityModule().trackedEntityAttributes()
-                    .byDisplayInListNoProgram().eq(true).blockingGet()).map(trackedEntityAttributes -> {
-                List<Program> programs = d2.programModule().programs().blockingGet();
+                    .byDisplayInListNoProgram().eq(true).blockingGetUids()).map(teaUids -> {
+                List<String> programUids = d2.programModule().programs().blockingGetUids();
 
-                List<String> teaUids = UidsHelper.getUidsList(trackedEntityAttributes);
                 List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = new ArrayList<>();
 
-                for (Program program : programs) {
+                for (String program : programUids) {
                     List<ProgramTrackedEntityAttribute> attributeList = d2.programModule()
-                            .programTrackedEntityAttributes().byProgram().eq(program.uid())
+                            .programTrackedEntityAttributes().byProgram().eq(program)
                             .orderBySortOrder(RepositoryScope.OrderByDirection.ASC).blockingGet();
 
                     for (ProgramTrackedEntityAttribute pteattr : attributeList) {
@@ -460,7 +459,7 @@ public class DashboardRepositoryImpl
                     enrollmentObjectRepository.blockingDelete();
                     return !d2.enrollmentModule().enrollments().byTrackedEntityInstance().eq(teiUid)
                             .byDeleted().isFalse()
-                            .byStatus().eq(EnrollmentStatus.ACTIVE).blockingGet().isEmpty();
+                            .byStatus().eq(EnrollmentStatus.ACTIVE).blockingIsEmpty();
                 });
             } else {
                 return Single.error(new AuthorityException(null));
