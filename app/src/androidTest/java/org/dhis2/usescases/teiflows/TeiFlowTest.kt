@@ -1,19 +1,10 @@
 package org.dhis2.usescases.teiflows
 
 import android.content.Intent
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import kotlinx.android.synthetic.main.activity_search.view.form_recycler
-import org.dhis2.R
-import org.dhis2.common.viewactions.clickChildViewWithId
-import org.dhis2.common.viewactions.typeChildViewWithId
 import org.dhis2.usescases.BaseTest
 import org.dhis2.usescases.searchTrackEntity.SearchTEActivity
-import org.dhis2.usescases.searchTrackEntity.adapters.SearchTEViewHolder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,9 +20,12 @@ class TeiFlowTest: BaseTest() {
         setupCredentials()
 
         prepareWomanProgrammeIntentAndLaunchActivity(ruleSearch)
-        onView(withId(R.id.form_recycler)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchTEViewHolder>(0, typeChildViewWithId("hola", R.id.input_editText)))
-        onView(withId(R.id.form_recycler)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchTEViewHolder>(1, typeChildViewWithId("mundo", R.id.input_editText)))
-        onView(withId(R.id.form_recycler)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchTEViewHolder>(2, clickChildViewWithId(R.id.inputEditText)))
+        teiFlowRobot {
+            registerTei()
+            completeEnrollment()
+            enrollToProgramAgain()
+        }
+
     }
 
 
